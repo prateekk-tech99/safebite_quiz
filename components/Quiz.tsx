@@ -1,6 +1,8 @@
+
 import React, { useState } from 'react';
 import type { Question } from '../types';
 import QuestionCard from './QuestionCard';
+import { useTranslation } from '../context/LanguageContext';
 
 interface QuizProps {
   questions: Question[];
@@ -10,6 +12,7 @@ interface QuizProps {
 export default function Quiz({ questions, onFinish }: QuizProps) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
+  const { t } = useTranslation();
 
   const handleNextQuestion = (isCorrect: boolean) => {
     if (isCorrect) {
@@ -30,8 +33,8 @@ export default function Quiz({ questions, onFinish }: QuizProps) {
     <div className="w-full">
         <div className="mb-4">
             <div className="flex justify-between items-center text-white mb-2">
-                <p className="font-semibold">Question {currentQuestionIndex + 1} of {questions.length}</p>
-                <p className="font-semibold">Score: {score}</p>
+                <p className="font-semibold">{t('questionOf', currentQuestionIndex + 1, questions.length)}</p>
+                <p className="font-semibold">{t('score')}: {score}</p>
             </div>
             <div className="w-full bg-slate-700 rounded-full h-2.5">
                 <div 

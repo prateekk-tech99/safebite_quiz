@@ -1,22 +1,38 @@
-
-import React from 'react';
-import { Difficulty } from '../types';
+import React, { useEffect, useState } from 'react';
+import { Difficulty, Topic, BadgeId, Question } from '../types';
+import { useTranslation } from '../context/LanguageContext';
+import { useUserProgress } from '../context/UserProgressContext';
+import { achievements } from '../lib/achievements';
+import Badge from './Badge';
 
 interface ResultCardProps {
   score: number;
   totalQuestions: number;
   onRestart: () => void;
   difficulty: Difficulty | null;
+  topic: Topic | null;
+  questions: Question[];
 }
 
-export default function ResultCard({ score, totalQuestions, onRestart, difficulty }: ResultCardProps) {
+export default function ResultCard({ score, totalQuestions, onRestart, difficulty, topic, questions }: ResultCardProps) {
+  const { t } = useTranslation();
+  const { updateProgress } = useUserProgress();
+  const [newBadges, setNewBadges] = useState<BadgeId[]>([]);
+  
   const percentage = totalQuestions > 0 ? Math.round((score / totalQuestions) * 100) : 0;
 
+  useEffect(() => {
+    if (topic) {
+      const unlockedBadges = updateProgress(score, totalQuestions, topic, questions);
+      setNewBadges(unlockedBadges);
+    }
+  }, [score, totalQuestions, topic, questions, updateProgress]);
+
   const getFeedback = () => {
-    if (percentage >= 90) return { message: "Excellent!", style: "text-green-400" };
-    if (percentage >= 70) return { message: "Good Job!", style: "text-yellow-400" };
-    if (percentage >= 50) return { message: "Not Bad!", style: "text-orange-400" };
-    return { message: "Keep Practicing!", style: "text-red-400" };
+    if (percentage >= 90) return { message: t('resultFeedbackExcellent'), style: "text-green-400" };
+    if (percentage >= 70) return { message: t('resultFeedbackGood'), style: "text-yellow-400" };
+    if (percentage >= 50) return { message: t('resultFeedbackNotBad'), style: "text-orange-400" };
+    return { message: t('resultFeedbackKeepPracticing'), style: "text-red-400" };
   };
 
   const feedback = getFeedback();
@@ -26,8 +42,8 @@ export default function ResultCard({ score, totalQuestions, onRestart, difficult
 
   return (
     <div className="text-center p-8 bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 animate-fade-in">
-        <h1 className="text-3xl font-bold text-white mb-1">Quiz Completed!</h1>
-        {difficulty && <p className="text-lg text-cyan-400 font-semibold mb-2">{difficulty} Level</p>}
+        <h1 className="text-3xl font-bold text-white mb-1">{t('resultTitle')}</h1>
+        {difficulty && topic && <p className="text-lg text-cyan-400 font-semibold mb-2">{t('resultLevelTopic', difficulty, topic)}</p>}
         <p className={`text-2xl font-bold mb-6 ${feedback.style}`}>{feedback.message}</p>
 
         <div className="relative inline-flex items-center justify-center mb-6">
@@ -53,15 +69,25 @@ export default function ResultCard({ score, totalQuestions, onRestart, difficult
             </div>
         </div>
         
-        <p className="text-lg text-slate-300 mb-8">
-            You answered {score} out of {totalQuestions} questions correctly.
-        </p>
+        {newBadges.length > 0 && (
+          <div className="mb-6 bg-slate-900/50 p-4 rounded-lg">
+            <h3 className="text-lg font-bold text-yellow-300 mb-3">{t('newBadgeUnlocked')}</h3>
+            <div className="flex justify-center items-center gap-4">
+              {newBadges.map(badgeId => (
+                <div key={badgeId} className="flex flex-col items-center">
+                   <Badge badge={achievements[badgeId]} />
+                   <p className="text-xs text-slate-300 mt-1">{achievements[badgeId].name}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         <button
             onClick={onRestart}
             className="w-full bg-cyan-500 text-white font-bold py-3 px-6 rounded-lg text-xl hover:bg-cyan-600 transition-all duration-300 transform hover:scale-105 shadow-lg focus:outline-none focus:ring-4 focus:ring-cyan-300"
         >
-            Try Another Level
+            {t('resultRestartButton')}
         </button>
     </div>
   );

@@ -1,7 +1,9 @@
+
 import React, { useState, useEffect } from 'react';
 import type { Question } from '../types';
 import { CheckCircleIcon } from './icons/CheckCircleIcon';
 import { XCircleIcon } from './icons/XCircleIcon';
+import { useTranslation } from '../context/LanguageContext';
 
 interface QuestionCardProps {
   question: Question;
@@ -11,6 +13,7 @@ interface QuestionCardProps {
 export default function QuestionCard({ question, onAnswer }: QuestionCardProps) {
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [isAnswered, setIsAnswered] = useState(false);
+  const { t } = useTranslation();
 
   // Fix: Reset state when the question prop changes to ensure a fresh card for each question.
   useEffect(() => {
@@ -68,7 +71,7 @@ export default function QuestionCard({ question, onAnswer }: QuestionCardProps) 
             </div>
             <div className="ml-3">
               <h3 className={`text-lg font-bold ${isCorrect ? 'text-green-300' : 'text-red-300'}`}>
-                {isCorrect ? "Correct!" : "Incorrect"}
+                {isCorrect ? t('questionCorrect') : t('questionIncorrect')}
               </h3>
               <p className="mt-2 text-slate-300">{question.explanation}</p>
             </div>
@@ -81,7 +84,7 @@ export default function QuestionCard({ question, onAnswer }: QuestionCardProps) 
           onClick={() => onAnswer(isCorrect)}
           className="w-full mt-6 bg-cyan-500 text-white font-bold py-3 px-6 rounded-lg text-xl hover:bg-cyan-600 transition-all duration-300 transform hover:scale-105 shadow-lg"
         >
-          Next Question
+          {t('questionNextButton')}
         </button>
       )}
     </div>
