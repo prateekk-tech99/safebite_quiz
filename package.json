@@ -6,15 +6,21 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "server": "npx tsx server.ts"
   },
   "dependencies": {
     "@google/genai": "^1.17.0",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
     "@types/react": "^19.1.13",
     "@types/react-dom": "^19.1.9",
     "@vitejs/plugin-react": "^5.0.2",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
     "react": "^19.1.1",
-    "react-dom": "^19.1.1"
+    "react-dom": "^19.1.1",
+    "tsx": "^4.20.5"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
