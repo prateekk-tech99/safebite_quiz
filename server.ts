@@ -1,13 +1,44 @@
 import express from 'express';
 import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { GoogleGenAI, Type } from "@google/genai";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT || (process.env.NODE_ENV === 'production' ? 5000 : 3001);
+const NODE_ENV = process.env.NODE_ENV || 'development';
+
+// CORS configuration for production
+const corsOptions = {
+  origin: NODE_ENV === 'production' 
+    ? true  // Allow same-origin requests in production (static + API from same host)
+    : true,
+  credentials: true,
+  optionsSuccessStatus: 200
+};
 
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
+
+// Serve static files from the dist directory in production
+if (NODE_ENV === 'production') {
+  const distPath = path.join(__dirname, 'dist');
+  app.use(express.static(distPath));
+}
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.json({ 
+    status: 'healthy', 
+    timestamp: new Date().toISOString(),
+    port: PORT,
+    env: NODE_ENV
+  });
+});
 
 // Initialize Gemini AI with server-side API key
 const getAI = () => {
@@ -109,6 +140,27 @@ app.post('/api/generate-quiz', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Backend server running on port ${PORT}`);
+// Catch-all handler for SPA routing in production
+if (NODE_ENV === 'production') {
+  // Use a fallback middleware instead of a route
+  app.use((req, res, next) => {
+    // Skip if this is an API or health route
+    if (req.path.startsWith('/api/') || req.path.startsWith('/health')) {
+      return next();
+    }
+    
+    // Check if the requested file exists in dist
+    const filePath = path.join(__dirname, 'dist', req.path);
+    
+    // For non-API routes that don't match files, serve index.html
+    const indexPath = path.join(__dirname, 'dist', 'index.html');
+    res.sendFile(indexPath);
+  });
+}
+
+app.listen(Number(PORT), '0.0.0.0', () => {
+  console.log(`Backend server running on port ${PORT} in ${NODE_ENV} mode`);
+  if (NODE_ENV === 'production') {
+    console.log('Serving static files from dist directory');
+  }
 });
