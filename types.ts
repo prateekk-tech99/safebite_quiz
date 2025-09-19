@@ -74,3 +74,10 @@ export interface OfflineQuiz {
   difficulty: Difficulty;
   topic: Topic;
 }
+
+export interface WrongAnswerPayload {
+  question: string;
+  options: string[];
+  correctAnswer: string;
+  userAnswer: string;
+}

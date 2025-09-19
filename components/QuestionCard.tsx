@@ -7,7 +7,7 @@ import { useTranslation } from '../context/LanguageContext';
 
 interface QuestionCardProps {
   question: Question;
-  onAnswer: (isCorrect: boolean) => void;
+  onAnswer: (isCorrect: boolean, selectedAnswer: number) => void;
 }
 
 export default function QuestionCard({ question, onAnswer }: QuestionCardProps) {
@@ -81,7 +81,7 @@ export default function QuestionCard({ question, onAnswer }: QuestionCardProps) 
       
       {isAnswered && (
         <button
-          onClick={() => onAnswer(isCorrect)}
+          onClick={() => onAnswer(isCorrect, selectedAnswer as number)}
           className="w-full mt-6 bg-cyan-500 text-white font-bold py-3 px-6 rounded-lg text-xl hover:bg-cyan-600 transition-all duration-300 transform hover:scale-105 shadow-lg"
         >
           {t('questionNextButton')}

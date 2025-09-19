@@ -6,23 +6,28 @@ import { useTranslation } from '../context/LanguageContext';
 
 interface QuizProps {
   questions: Question[];
-  onFinish: (score: number) => void;
+  onFinish: (score: number, answers: (number | null)[]) => void;
 }
 
 export default function Quiz({ questions, onFinish }: QuizProps) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
+  const [answers, setAnswers] = useState<(number | null)[]>(Array(questions.length).fill(null));
   const { t } = useTranslation();
 
-  const handleNextQuestion = (isCorrect: boolean) => {
+  const handleNextQuestion = (isCorrect: boolean, selectedAnswer: number) => {
     if (isCorrect) {
       setScore(prevScore => prevScore + 1);
     }
+    
+    const newAnswers = [...answers];
+    newAnswers[currentQuestionIndex] = selectedAnswer;
+    setAnswers(newAnswers);
 
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(prevIndex => prevIndex + 1);
     } else {
-      onFinish(score + (isCorrect ? 1 : 0));
+      onFinish(score + (isCorrect ? 1 : 0), newAnswers);
     }
   };
 

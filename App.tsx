@@ -15,6 +15,7 @@ export default function App() {
   const [appView, setAppView] = useState<AppView>(AppView.DASHBOARD);
   const [activeQuiz, setActiveQuiz] = useState<{ questions: Question[], difficulty: Difficulty, topic: Topic } | null>(null);
   const [score, setScore] = useState(0);
+  const [userAnswers, setUserAnswers] = useState<(number | null)[]>([]);
   const [error, setError] = useState<string | null>(null);
   const { language, t } = useTranslation();
   const { addOfflineQuiz } = useUserProgress();
@@ -31,6 +32,7 @@ export default function App() {
         } else {
           setActiveQuiz({ questions: newQuestions, difficulty, topic });
           setScore(0);
+          setUserAnswers([]);
           setAppView(AppView.QUIZ);
         }
       } else {
@@ -47,17 +49,20 @@ export default function App() {
   const startOfflineQuiz = (quiz: { questions: Question[], difficulty: Difficulty, topic: Topic }) => {
     setActiveQuiz(quiz);
     setScore(0);
+    setUserAnswers([]);
     setAppView(AppView.QUIZ);
   };
 
-  const finishQuiz = useCallback((finalScore: number) => {
+  const finishQuiz = useCallback((finalScore: number, finalAnswers: (number | null)[]) => {
     setScore(finalScore);
+    setUserAnswers(finalAnswers);
     setAppView(AppView.FINISHED);
   }, []);
 
   const returnToDashboard = useCallback(() => {
     setActiveQuiz(null);
     setScore(0);
+    setUserAnswers([]);
     setAppView(AppView.DASHBOARD);
   }, []);
 
@@ -76,6 +81,12 @@ export default function App() {
             difficulty={activeQuiz.difficulty}
             topic={activeQuiz.topic}
             questions={activeQuiz.questions}
+            userAnswers={userAnswers}
+            onPracticeTopic={
+              activeQuiz 
+                ? () => handleQuizRequest(activeQuiz.difficulty, activeQuiz.topic, false) 
+                : () => {}
+            }
           />
         ) : null;
       case AppView.QUIZ_SETUP:
