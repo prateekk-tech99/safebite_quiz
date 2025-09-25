@@ -18,6 +18,7 @@ interface ResultCardProps {
   topic: Topic | null;
   questions: Question[];
   userAnswers: (number | null)[];
+  timeTaken: number | null;
   onPracticeTopic: () => void;
 }
 
@@ -79,7 +80,7 @@ const SimpleMarkdownRenderer = ({ content }: { content: string }) => {
 };
 
 
-export default function ResultCard({ score, totalQuestions, onRestart, difficulty, topic, questions, userAnswers, onPracticeTopic }: ResultCardProps) {
+export default function ResultCard({ score, totalQuestions, onRestart, difficulty, topic, questions, userAnswers, timeTaken, onPracticeTopic }: ResultCardProps) {
   const { t, language } = useTranslation();
   const { scores, updateProgress } = useUserProgress();
   const [newBadges, setNewBadges] = useState<BadgeId[]>([]);
@@ -93,11 +94,11 @@ export default function ResultCard({ score, totalQuestions, onRestart, difficult
   const didStruggle = percentage < 70;
 
   useEffect(() => {
-    if (topic) {
-      const unlockedBadges = updateProgress(score, totalQuestions, topic, questions);
+    if (topic && timeTaken !== null) {
+      const unlockedBadges = updateProgress(score, totalQuestions, topic, questions, timeTaken);
       setNewBadges(unlockedBadges);
     }
-  }, [score, totalQuestions, topic, questions, updateProgress]);
+  }, [score, totalQuestions, topic, questions, timeTaken, updateProgress]);
 
   const handleToggleAiFeedback = async () => {
     // If we're opening it for the first time and there are wrong answers
@@ -138,6 +139,13 @@ export default function ResultCard({ score, totalQuestions, onRestart, difficult
     if (percentage >= 50) return { message: t('resultFeedbackNotBad'), style: "text-orange-400" };
     return { message: t('resultFeedbackKeepPracticing'), style: "text-red-400" };
   };
+  
+  const formatTime = (totalSeconds: number | null) => {
+    if (totalSeconds === null) return '--:--';
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  };
 
   const feedback = getFeedback();
   const radius = 60;
@@ -153,7 +161,8 @@ export default function ResultCard({ score, totalQuestions, onRestart, difficult
     <div className="text-center p-8 bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 animate-fade-in w-full">
         <h1 className="text-3xl font-bold text-white mb-1">{t('resultTitle')}</h1>
         {difficulty && topic && <p className="text-lg text-cyan-400 font-semibold mb-2">{t('resultLevelTopic', difficulty, topic)}</p>}
-        <p className={`text-2xl font-bold mb-6 ${feedback.style}`}>{feedback.message}</p>
+        <p className={`text-2xl font-bold mb-2 ${feedback.style}`}>{feedback.message}</p>
+        <p className="text-slate-400 text-sm mb-4">{t('timeTaken')}: {formatTime(timeTaken)}</p>
 
         <div className="relative inline-flex items-center justify-center mb-6">
             <svg className="w-40 h-40 transform -rotate-90">

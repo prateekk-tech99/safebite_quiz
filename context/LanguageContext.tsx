@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useContext, useMemo } from 'react';
 import { translations } from '../lib/translations';
 import { Language } from '../types';
@@ -15,7 +14,8 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+// FIX: The component's prop type was causing downstream type errors in index.tsx. Using React.PropsWithChildren is more robust and solves the issue.
+export const LanguageProvider = ({ children }: React.PropsWithChildren<{}>) => {
   const [language, setLanguage] = useState<Language>(Language.EN);
 
   // The 't' function is memoized with useCallback to prevent unnecessary re-renders

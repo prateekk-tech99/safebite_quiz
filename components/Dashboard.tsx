@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { AppView, OfflineQuiz } from '../types';
 import { useUserProgress } from '../context/UserProgressContext';
@@ -6,6 +7,7 @@ import { BrainIcon } from './icons/BrainIcon';
 import { CalendarIcon } from './icons/CalendarIcon';
 import { TrophyIcon } from './icons/TrophyIcon';
 import { achievements } from '../lib/achievements';
+import { topics } from '../lib/topics';
 import Badge from './Badge';
 
 interface DashboardProps {
@@ -14,7 +16,7 @@ interface DashboardProps {
 }
 
 export default function Dashboard({ setAppView, startOfflineQuiz }: DashboardProps) {
-  const { streak, badges, offlineQuizzes, removeOfflineQuiz } = useUserProgress();
+  const { streak, badges, offlineQuizzes, removeOfflineQuiz, scores } = useUserProgress();
   const { t } = useTranslation();
 
   const recentBadges = badges.slice(-3).map(id => achievements[id]);
@@ -42,6 +44,34 @@ export default function Dashboard({ setAppView, startOfflineQuiz }: DashboardPro
           <TrophyIcon className="h-8 w-8 mx-auto text-yellow-400 mb-2" />
           <p className="text-3xl font-bold">{badges.length}</p>
           <p className="text-slate-400">{t('badges')}</p>
+        </div>
+      </div>
+
+      {/* Topic Mastery */}
+      <div className="bg-slate-800/50 p-4 rounded-lg border border-slate-700">
+        <h3 className="font-bold mb-4 text-lg text-center">{t('topicMastery')}</h3>
+        <div className="space-y-3">
+          {topics.map(topic => {
+            const topicStats = scores[topic];
+            const percentage = topicStats && topicStats.totalAttempted > 0
+              ? Math.round((topicStats.totalCorrect / topicStats.totalAttempted) * 100)
+              : 0;
+            
+            return (
+              <div key={topic}>
+                <div className="flex justify-between items-center mb-1">
+                  <span className="text-sm font-medium text-slate-300">{topic}</span>
+                  <span className="text-sm font-medium text-cyan-400">{percentage}%</span>
+                </div>
+                <div className="w-full bg-slate-700 rounded-full h-2">
+                  <div 
+                    className="bg-cyan-500 h-2 rounded-full transition-all duration-500" 
+                    style={{ width: `${percentage}%` }}>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
       

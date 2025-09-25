@@ -1,13 +1,35 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { Difficulty, Language, Topic, WrongAnswerPayload } from '../types';
 
-if (!process.env.API_KEY) {
+// Use a variable to hold the singleton instance of the AI client.
+let ai: GoogleGenAI | null = null;
+
+/**
+ * Lazily initializes and returns the GoogleGenAI client instance.
+ * This prevents the app from crashing on startup if the `process.env.API_KEY`
+ * is not available, which is common in browser-only environments.
+ * The error is deferred until an actual API call is made.
+ * @returns {GoogleGenAI} The initialized AI client.
+ * @throws {Error} If the API_KEY environment variable is not set.
+ */
+function getAiClient(): GoogleGenAI {
+  if (ai) {
+    return ai;
+  }
+
+  // This check will fail and throw an error if the hosting environment
+  // has not properly configured and exposed the process.env.API_KEY variable.
+  if (typeof process === 'undefined' || !process.env || !process.env.API_KEY) {
     throw new Error("API_KEY environment variable not set");
+  }
+
+  ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  return ai;
 }
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export async function generateQuizQuestions(count: number, difficulty: Difficulty, topic: Topic, language: Language) {
   try {
+    const client = getAiClient();
     const prompt = `Generate ${count} unique, scenario-based multiple-choice questions for a Food Safety Officer exam, in ${language}. 
     The difficulty level should be ${difficulty}.
     The topic must be strictly focused on: ${topic}.
@@ -22,7 +44,7 @@ export async function generateQuizQuestions(count: number, difficulty: Difficult
     4. A detailed, comprehensive explanation for why the answer is correct.
     The entire output, including questions, options, and explanations, must be in ${language} and formatted as a single JSON object.`;
 
-    const response = await ai.models.generateContent({
+    const response = await client.models.generateContent({
       model: "gemini-2.5-flash",
       contents: prompt,
       config: {
@@ -71,13 +93,15 @@ export async function generateQuizQuestions(count: number, difficulty: Difficult
 
   } catch (error) {
     console.error("Error generating quiz questions:", error);
-    return [];
+    // Re-throw the error so it can be caught by the component's error handler in App.tsx
+    throw error;
   }
 }
 
 
 export async function generateFeedback(topic: Topic, difficulty: Difficulty, wrongAnswers: WrongAnswerPayload[], language: Language) {
   try {
+    const client = getAiClient();
     const mistakesString = wrongAnswers.map(wa => `
 - Question: "${wa.question}"
 - Options: ${wa.options.join(', ')}
@@ -95,7 +119,7 @@ Based on these specific mistakes, please provide a concise, personalized study p
 4. The entire response must be in ${language}.
 5. Use markdown for formatting (e.g., lists with '-', and bold text with '**').`;
 
-    const response = await ai.models.generateContent({
+    const response = await client.models.generateContent({
       model: "gemini-2.5-flash",
       contents: prompt,
     });

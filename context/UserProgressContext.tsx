@@ -8,7 +8,7 @@ interface UserProgressState extends UserProgress {
 
 type Action =
   | { type: 'SET_STATE'; payload: UserProgressState }
-  | { type: 'UPDATE_PROGRESS'; payload: { score: number; total: number; topic: Topic; questions: Question[] } }
+  | { type: 'UPDATE_PROGRESS'; payload: { score: number; total: number; topic: Topic; questions: Question[], timeTaken: number } }
   | { type: 'ADD_OFFLINE_QUIZ'; payload: OfflineQuiz }
   | { type: 'REMOVE_OFFLINE_QUIZ'; payload: string };
 
@@ -23,7 +23,7 @@ const initialState: UserProgressState = {
 
 const UserProgressContext = createContext<{
   state: UserProgressState;
-  updateProgress: (score: number, total: number, topic: Topic, questions: Question[]) => BadgeId[];
+  updateProgress: (score: number, total: number, topic: Topic, questions: Question[], timeTaken: number) => BadgeId[];
   addOfflineQuiz: (quiz: OfflineQuiz) => void;
   removeOfflineQuiz: (id: string) => void;
 } | undefined>(undefined);
@@ -33,7 +33,7 @@ function progressReducer(state: UserProgressState, action: Action): UserProgress
     case 'SET_STATE':
       return action.payload;
     case 'UPDATE_PROGRESS': {
-      const { score, total, topic, questions } = action.payload;
+      const { score, total, topic, questions, timeTaken } = action.payload;
       const today = new Date().toDateString();
       const yesterday = new Date(Date.now() - 86400000).toDateString();
       
@@ -59,7 +59,7 @@ function progressReducer(state: UserProgressState, action: Action): UserProgress
         questionBank: newQuestionBank,
       };
 
-      const unlockedBadges = checkBadges(updatedState, score, total, topic);
+      const unlockedBadges = checkBadges(updatedState, score, total, topic, timeTaken);
       const newBadges = [...new Set([...state.badges, ...unlockedBadges])];
       
       return { ...updatedState, badges: newBadges };
@@ -79,7 +79,8 @@ function progressReducer(state: UserProgressState, action: Action): UserProgress
   }
 }
 
-export const UserProgressProvider = ({ children }: { children: ReactNode }) => {
+// FIX: The component's prop type was causing downstream type errors in index.tsx. Using React.PropsWithChildren is more robust and solves the issue.
+export const UserProgressProvider = ({ children }: React.PropsWithChildren<{}>) => {
   const [state, dispatch] = useReducer(progressReducer, initialState);
 
   useEffect(() => {
@@ -106,9 +107,9 @@ export const UserProgressProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [state]);
 
-  const updateProgress = useCallback((score: number, total: number, topic: Topic, questions: Question[]): BadgeId[] => {
+  const updateProgress = useCallback((score: number, total: number, topic: Topic, questions: Question[], timeTaken: number): BadgeId[] => {
     const oldBadges = new Set(state.badges);
-    const action = { type: 'UPDATE_PROGRESS' as const, payload: { score, total, topic, questions } };
+    const action = { type: 'UPDATE_PROGRESS' as const, payload: { score, total, topic, questions, timeTaken } };
     const newState = progressReducer(state, action);
     dispatch(action);
     const newBadges = newState.badges.filter(b => !oldBadges.has(b));

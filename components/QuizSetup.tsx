@@ -1,6 +1,8 @@
+
 import React, { useState } from 'react';
 import { Difficulty, Topic, Language } from '../types';
 import { useTranslation } from '../context/LanguageContext';
+import { useUserProgress } from '../context/UserProgressContext';
 import { topics } from '../lib/topics';
 
 interface QuizSetupProps {
@@ -11,6 +13,7 @@ interface QuizSetupProps {
 
 export default function QuizSetup({ onStartQuiz, quizLength, onBack }: QuizSetupProps) {
   const { language, setLanguage, t } = useTranslation();
+  const { scores } = useUserProgress();
   const [selectedTopic, setSelectedTopic] = useState<Topic>(Topic.GENERAL);
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty>(Difficulty.EASY);
 
@@ -40,17 +43,32 @@ export default function QuizSetup({ onStartQuiz, quizLength, onBack }: QuizSetup
       <div className="mb-6">
         <h2 className="text-xl font-semibold mb-3">{t('selectTopic')}</h2>
         <div className="grid grid-cols-2 gap-3">
-          {topics.map(topic => (
-            <button
-              key={topic}
-              onClick={() => setSelectedTopic(topic)}
-              className={`py-3 px-2 rounded-lg transition-colors duration-200 text-center text-sm ${
-                selectedTopic === topic ? 'bg-cyan-500 font-bold' : 'bg-slate-700 hover:bg-slate-600'
-              }`}
-            >
-              {topic}
-            </button>
-          ))}
+          {topics.map(topic => {
+            const topicStats = scores[topic];
+            const percentage = topicStats && topicStats.totalAttempted > 0
+              ? Math.round((topicStats.totalCorrect / topicStats.totalAttempted) * 100)
+              : 0;
+              
+            return (
+              <button
+                key={topic}
+                onClick={() => setSelectedTopic(topic)}
+                className={`p-3 rounded-lg transition-colors duration-200 text-center ${
+                  selectedTopic === topic ? 'bg-cyan-500 font-bold' : 'bg-slate-700 hover:bg-slate-600'
+                }`}
+              >
+                <span className="text-sm">{topic}</span>
+                {topicStats && topicStats.totalAttempted > 0 && (
+                  <div className="w-full bg-slate-900/50 rounded-full h-1.5 mt-2">
+                    <div 
+                      className="bg-cyan-400 h-1.5 rounded-full" 
+                      style={{ width: `${percentage}%` }}
+                    ></div>
+                  </div>
+                )}
+              </button>
+            );
+          })}
         </div>
       </div>
 

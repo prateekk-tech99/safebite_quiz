@@ -3,12 +3,14 @@ import { BrainIcon } from '../components/icons/BrainIcon';
 import { CheckCircleIcon } from '../components/icons/CheckCircleIcon';
 import { TrophyIcon } from '../components/icons/TrophyIcon';
 import { CalendarIcon } from '../components/icons/CalendarIcon';
+import { ClockIcon } from '../components/icons/ClockIcon';
 
 export const achievements: Record<BadgeId, Badge> = {
   'first-quiz': { id: 'first-quiz', name: 'Getting Started', description: 'Complete your first quiz.', icon: BrainIcon },
   'perfect-score': { id: 'perfect-score', name: 'Perfectionist', description: 'Get a perfect score on any quiz.', icon: CheckCircleIcon },
   'streak-3': { id: 'streak-3', name: 'On a Roll', description: 'Maintain a 3-day streak.', icon: CalendarIcon },
   'streak-7': { id: 'streak-7', name: 'Committed Learner', description: 'Maintain a 7-day streak.', icon: TrophyIcon },
+  'speed-demon': { id: 'speed-demon', name: 'Speed Demon', description: 'Complete a quiz with an average of 15 seconds or less per question.', icon: ClockIcon },
   'general-master': { id: 'general-master', name: 'Safety Specialist', description: 'Answer 20 General questions correctly.', icon: BrainIcon },
   'haccp-master': { id: 'haccp-master', name: 'HACCP Pro', description: 'Answer 20 HACCP questions correctly.', icon: BrainIcon },
   'micro-master': { id: 'micro-master', name: 'Microbe Hunter', description: 'Answer 20 Food Microbiology questions correctly.', icon: BrainIcon },
@@ -19,7 +21,7 @@ export const achievements: Record<BadgeId, Badge> = {
   'laws-master': { id: 'laws-master', name: 'Law Scholar', description: 'Answer 20 Food Law questions correctly.', icon: BrainIcon },
 };
 
-export function checkBadges(progress: UserProgress, score: number, total: number, topic: Topic): BadgeId[] {
+export function checkBadges(progress: UserProgress, score: number, total: number, topic: Topic, timeTaken: number): BadgeId[] {
   const unlocked: BadgeId[] = [];
   
   // First quiz
@@ -38,6 +40,14 @@ export function checkBadges(progress: UserProgress, score: number, total: number
   }
   if (progress.streak >= 7 && !progress.badges.includes('streak-7')) {
     unlocked.push('streak-7');
+  }
+
+  // Speed Demon
+  if (total > 0) {
+    const avgTimePerQuestion = timeTaken / total;
+    if (avgTimePerQuestion <= 15 && !progress.badges.includes('speed-demon')) {
+      unlocked.push('speed-demon');
+    }
   }
   
   // Topic mastery

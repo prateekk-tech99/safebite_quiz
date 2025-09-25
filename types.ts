@@ -52,7 +52,8 @@ export type BadgeId =
   | 'hygiene-master'
   | 'chemistry-master'
   | 'fssai-master'
-  | 'laws-master';
+  | 'laws-master'
+  | 'speed-demon';
 
 export interface Badge {
   id: BadgeId;

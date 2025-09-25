@@ -1,4 +1,3 @@
-
 import { Language } from '../types';
 
 export const translations = {
@@ -15,6 +14,7 @@ export const translations = {
     startNewQuiz: "Start New Quiz",
     offlineQuizzes: "Offline Quizzes",
     noOfflineQuizzes: "No quizzes downloaded yet.",
+    topicMastery: "Topic Mastery",
 
     // Quiz Setup
     quizSetupTitle: "Setup Your Quiz",
@@ -32,6 +32,8 @@ export const translations = {
     // General
     questionOf: (current: number, total: number) => `Question ${current} of ${total}`,
     score: "Score",
+    timeLeft: "Time Left",
+    timeTaken: "Time Taken",
     loaderMessage: "Preparing your AI-powered quiz...",
     resultTitle: "Quiz Completed!",
     resultLevelTopic: (difficulty: string, topic: string) => `${difficulty} - ${topic}`,
@@ -75,6 +77,7 @@ export const translations = {
     startNewQuiz: "Empezar Nuevo Cuestionario",
     offlineQuizzes: "Cuestionarios sin Conexión",
     noOfflineQuizzes: "Aún no hay cuestionarios descargados.",
+    topicMastery: "Dominio de Temas",
 
     // Quiz Setup
     quizSetupTitle: "Configura tu Cuestionario",
@@ -92,6 +95,8 @@ export const translations = {
     // General
     questionOf: (current: number, total: number) => `Pregunta ${current} de ${total}`,
     score: "Puntuación",
+    timeLeft: "Tiempo Restante",
+    timeTaken: "Tiempo Utilizado",
     loaderMessage: "Preparando tu cuestionario con IA...",
     resultTitle: "¡Cuestionario Completado!",
     resultLevelTopic: (difficulty: string, topic: string) => `${difficulty} - ${topic}`,
@@ -135,6 +140,7 @@ export const translations = {
     startNewQuiz: "Commencer un Nouveau Quiz",
     offlineQuizzes: "Quiz Hors Ligne",
     noOfflineQuizzes: "Aucun quiz téléchargé pour le moment.",
+    topicMastery: "Maîtrise des Sujets",
 
     // Quiz Setup
     quizSetupTitle: "Configurez Votre Quiz",
@@ -152,6 +158,8 @@ export const translations = {
     // General
     questionOf: (current: number, total: number) => `Question ${current} sur ${total}`,
     score: "Score",
+    timeLeft: "Temps Restant",
+    timeTaken: "Temps Écoulé",
     loaderMessage: "Préparation de votre quiz IA...",
     resultTitle: "Quiz Terminé !",
     resultLevelTopic: (difficulty: string, topic: string) => `${difficulty} - ${topic}`,
@@ -195,6 +203,7 @@ export const translations = {
     startNewQuiz: "नई प्रश्नोत्तरी शुरू करें",
     offlineQuizzes: "ऑफ़लाइन क्विज़",
     noOfflineQuizzes: "अभी तक कोई क्विज़ डाउनलोड नहीं किया गया है।",
+    topicMastery: "विषय निपुणता",
 
     // Quiz Setup
     quizSetupTitle: "अपनी प्रश्नोत्तरी सेट करें",
@@ -212,6 +221,8 @@ export const translations = {
     // General
     questionOf: (current: number, total: number) => `प्रश्न ${current} का ${total}`,
     score: "स्कोर",
+    timeLeft: "समय शेष",
+    timeTaken: "लिया गया समय",
     loaderMessage: "आपकी एआई-संचालित प्रश्नोत्तरी तैयार हो रही है...",
     resultTitle: "प्रश्नोतरी पूरी हुई!",
     resultLevelTopic: (difficulty: string, topic: string) => `${difficulty} - ${topic}`,
