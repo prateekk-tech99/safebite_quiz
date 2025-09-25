@@ -1,3 +1,4 @@
+
 import { Language } from '../types';
 
 export const translations = {
@@ -38,7 +39,6 @@ export const translations = {
     resultFeedbackGood: "Good Job!",
     resultFeedbackNotBad: "Not Bad!",
     resultFeedbackKeepPracticing: "Keep Practicing!",
-    resultScoreMessage: (score: number, total: number) => `You answered ${score} out of ${total} questions correctly.`,
     resultRestartButton: "Back to Dashboard",
     questionCorrect: "Correct!",
     questionIncorrect: "Incorrect",
@@ -99,7 +99,6 @@ export const translations = {
     resultFeedbackGood: "¡Buen Trabajo!",
     resultFeedbackNotBad: "¡No Está Mal!",
     resultFeedbackKeepPracticing: "¡Sigue Practicando!",
-    resultScoreMessage: (score: number, total: number) => `Respondiste correctamente a ${score} de ${total} preguntas.`,
     resultRestartButton: "Volver al Panel",
     questionCorrect: "¡Correcto!",
     questionIncorrect: "Incorrecto",
@@ -160,7 +159,6 @@ export const translations = {
     resultFeedbackGood: "Bon Travail !",
     resultFeedbackNotBad: "Pas Mal !",
     resultFeedbackKeepPracticing: "Continuez à Pratiquer !",
-    resultScoreMessage: (score: number, total: number) => `Vous avez répondu correctly à ${score} questions sur ${total}.`,
     resultRestartButton: "Retour au Tableau de Bord",
     questionCorrect: "Correct !",
     questionIncorrect: "Incorrect",
@@ -221,7 +219,6 @@ export const translations = {
     resultFeedbackGood: "बहुत अच्छा!",
     resultFeedbackNotBad: "बुरा नहीं!",
     resultFeedbackKeepPracticing: "अभ्यास करते रहें!",
-    resultScoreMessage: (score: number, total: number) => `आपने ${total} में से ${score} प्रश्नों का सही उत्तर दिया।`,
     resultRestartButton: "डैशबोर्ड पर वापस जाएं",
     questionCorrect: "सही!",
     questionIncorrect: "गलत",

@@ -1,3 +1,6 @@
+// Fix: Import React to resolve the 'React' namespace used in the Badge interface.
+import React from 'react';
+
 export interface Question {
   question: string;
   options: string[];
