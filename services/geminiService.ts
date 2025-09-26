@@ -75,7 +75,14 @@ export async function generateQuizQuestions(count: number, difficulty: Difficult
       },
     });
 
-    const jsonString = response.text.trim();
+    let jsonString = response.text.trim();
+    // The model might wrap the JSON in a markdown block.
+    // This regex extracts the JSON content from a markdown code block.
+    const jsonMatch = jsonString.match(/```json\n([\s\S]*?)\n```/);
+    if (jsonMatch && jsonMatch[1]) {
+      jsonString = jsonMatch[1];
+    }
+
     const parsed = JSON.parse(jsonString);
     return parsed.questions || [];
 
