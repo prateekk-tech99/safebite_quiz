@@ -1,15 +1,17 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { Difficulty, Language, Topic, WrongAnswerPayload } from '../types';
 
-// Initialize the GoogleGenAI client at the module level.
-// This simplifies the code by removing the lazy-loading `getAiClient` function.
-// Assuming the API_KEY environment variable is available at load time,
-// this ensures the client is ready for any function that needs it.
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// The singleton 'ai' instance and 'getAiClient' helper function have been removed.
+// A new, stateless approach is used where a client is instantiated for each request
+// to ensure robustness and eliminate potential state-related initialization errors.
 
 export async function generateQuizQuestions(count: number, difficulty: Difficulty, topic: Topic, language: Language) {
   try {
-    // A simpler, more direct prompt that relies on the response schema for formatting.
+    // Instantiate the client directly within the function call. This ensures that
+    // any initialization error (e.g., a missing API key) is cleanly caught
+    // by this function's try/catch block without relying on module-level state.
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    
     const prompt = `Generate ${count} multiple-choice questions for a Food Safety Officer exam.
 Language: ${language}.
 Difficulty: ${difficulty}.
@@ -94,6 +96,9 @@ The entire output must be in ${language}.`;
 
 export async function generateFeedback(topic: Topic, difficulty: Difficulty, wrongAnswers: WrongAnswerPayload[], language: Language) {
   try {
+    // Instantiate a new client for this request as well for consistency and robustness.
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+
     const mistakesString = wrongAnswers.map(wa => `
 - Question: "${wa.question}"
 - Options: ${wa.options.join(', ')}
