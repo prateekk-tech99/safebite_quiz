@@ -18,19 +18,14 @@ function getAiClient(): GoogleGenAI {
 export async function generateQuizQuestions(count: number, difficulty: Difficulty, topic: Topic, language: Language) {
   try {
     const aiClient = getAiClient();
-    const prompt = `Generate ${count} unique, scenario-based multiple-choice questions for a Food Safety Officer exam, in ${language}. 
-    The difficulty level should be ${difficulty}.
-    The topic must be strictly focused on: ${topic}.
-    The questions must present real-life situations a Food Safety Officer might encounter. The complexity of the scenario must match the difficulty level:
-    - For 'Beginner': Simple, direct scenarios on fundamental topics within ${topic}.
-    - For 'Intermediate': More detailed situations requiring application of knowledge within ${topic}.
-    - For 'Expert': Complex, multi-faceted problems involving investigation, regulation interpretation, and critical decision-making within ${topic}.
-    For each question, provide:
-    1. The question text.
-    2. Four distinct options.
-    3. The 0-based index of the correct answer.
-    4. A detailed, comprehensive explanation for why the answer is correct.
-    The entire output, including questions, options, and explanations, must be in ${language} and formatted as a single JSON object.`;
+    // A simpler, more direct prompt that relies on the response schema for formatting.
+    const prompt = `Generate ${count} multiple-choice questions for a Food Safety Officer exam.
+Language: ${language}.
+Difficulty: ${difficulty}.
+Topic: ${topic}.
+Each question must be a realistic, scenario-based question a Food Safety Officer might encounter.
+For each question, provide a question text, four options, the 0-based index of the correct answer, and a detailed explanation for why that answer is correct.
+The entire output must be in ${language}.`;
 
     const response = await aiClient.models.generateContent({
       model: "gemini-2.5-flash",
@@ -76,13 +71,25 @@ export async function generateQuizQuestions(count: number, difficulty: Difficult
     });
 
     let jsonString = response.text.trim();
-    // The model might wrap the JSON in a markdown block.
-    // This regex extracts the JSON content from a markdown code block.
-    const jsonMatch = jsonString.match(/```json\n([\s\S]*?)\n```/);
-    if (jsonMatch && jsonMatch[1]) {
-      jsonString = jsonMatch[1];
+    
+    if (!jsonString) {
+      console.error("Received empty response from API.");
+      return []; // Prevents crash, triggers 'errorGeneration' message in UI.
     }
 
+    // The model might wrap the JSON in a markdown block.
+    // This more robust regex handles optional 'json' language identifier and surrounding whitespace.
+    const jsonMatch = jsonString.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+    if (jsonMatch && jsonMatch[1]) {
+      jsonString = jsonMatch[1].trim();
+    }
+
+    // If after stripping markdown, the string is empty, return empty array.
+    if (!jsonString) {
+        console.error("JSON string is empty after attempting to strip markdown.");
+        return [];
+    }
+    
     const parsed = JSON.parse(jsonString);
     return parsed.questions || [];
 
