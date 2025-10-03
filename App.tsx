@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback } from 'react';
 import { AppView, type Question, Difficulty, Topic } from './types';
 import { generateQuizQuestions } from './services/geminiService';
@@ -98,7 +99,7 @@ export default function App() {
       case AppView.QUIZ_SETUP:
         return (
           <div className="w-full">
-            {error && <p className="w-full text-center text-red-400 bg-red-900/50 p-3 rounded-lg mb-4">{error}</p>}
+            {error && <p className="w-full text-center text-red-700 bg-red-200/50 border border-red-300 p-3 rounded-lg mb-4">{error}</p>}
             <QuizSetup onStartQuiz={handleQuizRequest} quizLength={QUIZ_LENGTH} onBack={() => setAppView(AppView.DASHBOARD)} />
           </div>
         );
@@ -109,7 +110,7 @@ export default function App() {
   };
 
   return (
-    <main className="bg-slate-900 min-h-screen flex items-center justify-center p-4 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-700 via-slate-900 to-black">
+    <main className="bg-[#F9F5F0] min-h-screen flex items-center justify-center p-4">
       <div className="w-full max-w-2xl mx-auto">
         {renderContent()}
       </div>

@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { Difficulty, Topic, BadgeId, Question, WrongAnswerPayload } from '../types';
 import { useTranslation } from '../context/LanguageContext';
@@ -29,28 +30,28 @@ const ReviewAnswers = ({ questions, userAnswers }: { questions: Question[]; user
       const isCorrect = userAnswer === q.correctAnswerIndex;
 
       return (
-        <div key={index} className="p-4 bg-slate-900/50 rounded-lg border border-slate-700">
-          <p className="font-semibold text-slate-200 mb-3">{index + 1}. {q.question}</p>
+        <div key={index} className="p-4 bg-[#F9F5F0] rounded-lg border border-[#344F1F]/20">
+          <p className="font-semibold text-[#344F1F] mb-3">{index + 1}. {q.question}</p>
           <div className="space-y-2">
             {q.options.map((option, optIndex) => {
               const isUserChoice = userAnswer === optIndex;
               const isCorrectChoice = q.correctAnswerIndex === optIndex;
               
-              let optionClass = "text-slate-300";
-              if (isCorrectChoice) optionClass = "text-green-400 font-bold";
-              if (isUserChoice && !isCorrect) optionClass = "text-red-400 line-through";
+              let optionClass = "text-[#344F1F]/90";
+              if (isCorrectChoice) optionClass = "text-green-700 font-bold";
+              if (isUserChoice && !isCorrect) optionClass = "text-red-700 line-through";
               
               return (
-                <div key={optIndex} className={`flex items-center p-2 rounded ${optionClass} ${isCorrectChoice ? 'bg-green-900/20' : ''} ${isUserChoice && !isCorrect ? 'bg-red-900/20' : ''}`}>
+                <div key={optIndex} className={`flex items-center p-2 rounded ${optionClass} ${isCorrectChoice ? 'bg-green-100' : ''} ${isUserChoice && !isCorrect ? 'bg-red-100' : ''}`}>
                   <span className="mr-2 font-mono">{String.fromCharCode(65 + optIndex)}.</span>
                   <span>{option}</span>
-                  {isCorrectChoice && <CheckCircleIcon className="w-5 h-5 ml-auto text-green-400" />}
-                  {isUserChoice && !isCorrect && <XCircleIcon className="w-5 h-5 ml-auto text-red-400" />}
+                  {isCorrectChoice && <CheckCircleIcon className="w-5 h-5 ml-auto text-green-700" />}
+                  {isUserChoice && !isCorrect && <XCircleIcon className="w-5 h-5 ml-auto text-red-700" />}
                 </div>
               );
             })}
           </div>
-          <p className="mt-3 text-sm text-slate-400 bg-slate-800/50 p-3 rounded-md">{q.explanation}</p>
+          <p className="mt-3 text-sm text-[#344F1F]/80 bg-[#EAE2CF] p-3 rounded-md">{q.explanation}</p>
         </div>
       );
     })}
@@ -59,13 +60,13 @@ const ReviewAnswers = ({ questions, userAnswers }: { questions: Question[]; user
 
 const SimpleMarkdownRenderer = ({ content }: { content: string }) => {
   return (
-    <div className="space-y-3 text-left text-slate-300">
+    <div className="space-y-3 text-left text-[#344F1F]/90">
       {content.split('\n').map((line, index) => {
-        line = line.replace(/\*\*(.*?)\*\*/g, '<strong class="text-white">$1</strong>');
+        line = line.replace(/\*\*(.*?)\*\*/g, '<strong class="text-[#344F1F]">$1</strong>');
         if (line.trim().startsWith('- ') || line.trim().startsWith('* ')) {
           return (
             <div key={index} className="flex items-start">
-              <span className="mr-2 mt-1 text-cyan-400">&bull;</span>
+              <span className="mr-2 mt-1 text-[#F4991A]">&bull;</span>
               <p className="flex-1" dangerouslySetInnerHTML={{ __html: line.substring(line.indexOf(' ') + 1) }} />
             </div>
           );
@@ -134,10 +135,10 @@ export default function ResultCard({ score, totalQuestions, onRestart, difficult
   };
 
   const getFeedback = () => {
-    if (percentage >= 90) return { message: t('resultFeedbackExcellent'), style: "text-green-400" };
-    if (percentage >= 70) return { message: t('resultFeedbackGood'), style: "text-yellow-400" };
-    if (percentage >= 50) return { message: t('resultFeedbackNotBad'), style: "text-orange-400" };
-    return { message: t('resultFeedbackKeepPracticing'), style: "text-red-400" };
+    if (percentage >= 90) return { message: t('resultFeedbackExcellent'), style: "text-green-700" };
+    if (percentage >= 70) return { message: t('resultFeedbackGood'), style: "text-yellow-600" };
+    if (percentage >= 50) return { message: t('resultFeedbackNotBad'), style: "text-orange-600" };
+    return { message: t('resultFeedbackKeepPracticing'), style: "text-red-600" };
   };
   
   const formatTime = (totalSeconds: number | null) => {
@@ -158,15 +159,15 @@ export default function ResultCard({ score, totalQuestions, onRestart, difficult
     : 0;
 
   return (
-    <div className="text-center p-8 bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 animate-fade-in w-full">
-        <h1 className="text-3xl font-bold text-white mb-1">{t('resultTitle')}</h1>
-        {difficulty && topic && <p className="text-lg text-cyan-400 font-semibold mb-2">{t('resultLevelTopic', difficulty, topic)}</p>}
+    <div className="text-center p-8 bg-[#F2EAD3] rounded-2xl shadow-2xl border border-[#344F1F]/20 animate-fade-in w-full">
+        <h1 className="text-3xl font-bold text-[#344F1F] mb-1">{t('resultTitle')}</h1>
+        {difficulty && topic && <p className="text-lg text-[#F4991A] font-semibold mb-2">{t('resultLevelTopic', difficulty, topic)}</p>}
         <p className={`text-2xl font-bold mb-2 ${feedback.style}`}>{feedback.message}</p>
-        <p className="text-slate-400 text-sm mb-4">{t('timeTaken')}: {formatTime(timeTaken)}</p>
+        <p className="text-[#344F1F]/70 text-sm mb-4">{t('timeTaken')}: {formatTime(timeTaken)}</p>
 
         <div className="relative inline-flex items-center justify-center mb-6">
             <svg className="w-40 h-40 transform -rotate-90">
-                <circle className="text-slate-700" strokeWidth="10" stroke="currentColor" fill="transparent" r={radius} cx="80" cy="80" />
+                <circle className="text-[#EAE2CF]" strokeWidth="10" stroke="currentColor" fill="transparent" r={radius} cx="80" cy="80" />
                 <circle
                     className={feedback.style}
                     strokeWidth="10"
@@ -182,41 +183,41 @@ export default function ResultCard({ score, totalQuestions, onRestart, difficult
                 />
             </svg>
             <div className="absolute flex flex-col items-center justify-center">
-                <span className="text-4xl font-bold text-white">{percentage}%</span>
-                <span className="text-slate-400 text-lg">{score} / {totalQuestions}</span>
+                <span className="text-4xl font-bold text-[#344F1F]">{percentage}%</span>
+                <span className="text-[#344F1F]/70 text-lg">{score} / {totalQuestions}</span>
             </div>
         </div>
 
         {topic && topicStats && topicStats.totalAttempted > 0 && (
-          <div className="my-6 p-4 bg-slate-900/50 rounded-lg text-left border border-slate-700">
-            <h3 className="text-lg font-bold text-white mb-3">{t('topicPerformanceHistory', topic)}</h3>
+          <div className="my-6 p-4 bg-[#F9F5F0] rounded-lg text-left border border-[#344F1F]/20">
+            <h3 className="text-lg font-bold text-[#344F1F] mb-3">{t('topicPerformanceHistory', topic)}</h3>
             <div>
                 <div className="flex justify-between items-center mb-1">
-                    <span className="text-base font-medium text-cyan-400">{t('overallAccuracy')}</span>
-                    <span className="text-sm font-medium text-cyan-400">{overallPercentage}%</span>
+                    <span className="text-base font-medium text-[#344F1F]">{t('overallAccuracy')}</span>
+                    <span className="text-sm font-medium text-[#344F1F]">{overallPercentage}%</span>
                 </div>
-                <div className="w-full bg-slate-700 rounded-full h-2.5">
+                <div className="w-full bg-[#EAE2CF] rounded-full h-2.5">
                     <div 
-                        className="bg-cyan-500 h-2.5 rounded-full transition-all duration-500" 
+                        className="bg-[#F4991A] h-2.5 rounded-full transition-all duration-500" 
                         style={{ width: `${overallPercentage}%` }}>
                     </div>
                 </div>
-                <p className="text-right text-sm text-slate-400 mt-1">{t('accuracyInfo', topicStats.totalCorrect, topicStats.totalAttempted)}</p>
+                <p className="text-right text-sm text-[#344F1F]/70 mt-1">{t('accuracyInfo', topicStats.totalCorrect, topicStats.totalAttempted)}</p>
             </div>
             {topicStats.totalAttempted === totalQuestions && (
-              <p className="text-slate-400 text-xs mt-2">{t('noHistory')}</p>
+              <p className="text-[#344F1F]/70 text-xs mt-2">{t('noHistory')}</p>
             )}
           </div>
         )}
         
         {newBadges.length > 0 && (
-          <div className="mb-6 bg-slate-900/50 p-4 rounded-lg">
-            <h3 className="text-lg font-bold text-yellow-300 mb-3">{t('newBadgeUnlocked')}</h3>
+          <div className="mb-6 bg-[#F9F5F0] p-4 rounded-lg">
+            <h3 className="text-lg font-bold text-yellow-600 mb-3">{t('newBadgeUnlocked')}</h3>
             <div className="flex justify-center items-center gap-4">
               {newBadges.map(badgeId => (
                 <div key={badgeId} className="flex flex-col items-center">
                    <Badge badge={achievements[badgeId]} />
-                   <p className="text-xs text-slate-300 mt-1">{achievements[badgeId].name}</p>
+                   <p className="text-xs text-[#344F1F]/80 mt-1">{achievements[badgeId].name}</p>
                 </div>
               ))}
             </div>
@@ -224,12 +225,12 @@ export default function ResultCard({ score, totalQuestions, onRestart, difficult
         )}
 
         {didStruggle && topic && (
-          <div className="my-6 p-4 bg-yellow-900/30 rounded-lg text-center border border-yellow-800">
-            <p className="font-semibold text-yellow-300">{t('resultStruggling', topic)}</p>
-            <p className="text-sm text-yellow-400/80 mt-1">{t('resultStrugglingSuggestion')}</p>
+          <div className="my-6 p-4 bg-[#F4991A]/10 rounded-lg text-center border border-[#F4991A]/30">
+            <p className="font-semibold text-[#B87313]">{t('resultStruggling', topic)}</p>
+            <p className="text-sm text-[#B87313]/80 mt-1">{t('resultStrugglingSuggestion')}</p>
             <button 
               onClick={onPracticeTopic} 
-              className="mt-4 bg-yellow-500 text-white font-bold py-2 px-5 rounded-lg hover:bg-yellow-600 transition-colors text-base"
+              className="mt-4 bg-[#F4991A] text-[#F9F5F0] font-bold py-2 px-5 rounded-lg hover:bg-[#E08D18] transition-colors text-base"
             >
               {t('resultPracticeAgain', topic)}
             </button>
@@ -239,13 +240,13 @@ export default function ResultCard({ score, totalQuestions, onRestart, difficult
         <div className="space-y-3 my-6">
           <button
               onClick={handleToggleAiFeedback}
-              className="w-full flex items-center justify-center gap-3 bg-fuchsia-600 text-white font-bold py-3 px-6 rounded-lg text-lg hover:bg-fuchsia-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
+              className="w-full flex items-center justify-center gap-3 bg-[#F4991A] text-[#F9F5F0] font-bold py-3 px-6 rounded-lg text-lg hover:bg-[#E08D18] transition-all duration-300 transform hover:scale-105 shadow-lg"
             >
               <SparklesIcon className="h-5 w-5" /> {t('getAiFeedback')}
           </button>
           {showAiFeedback && (
-            <div className="p-4 bg-slate-900/50 rounded-lg border border-slate-700 animate-fade-in-up">
-                <h3 className="text-lg font-bold text-fuchsia-400 mb-3">{t('aiFeedbackTitle')}</h3>
+            <div className="p-4 bg-[#F9F5F0] rounded-lg border border-[#344F1F]/20 animate-fade-in-up">
+                <h3 className="text-lg font-bold text-[#344F1F] mb-3">{t('aiFeedbackTitle')}</h3>
                 {isFeedbackLoading && <Loader message={t('aiFeedbackLoading')} />}
                 {feedbackError && <p className="text-red-400">{feedbackError}</p>}
                 {aiFeedback && <SimpleMarkdownRenderer content={aiFeedback} />}
@@ -254,10 +255,10 @@ export default function ResultCard({ score, totalQuestions, onRestart, difficult
 
           <button 
             onClick={() => setShowReview(!showReview)} 
-            className="w-full text-left p-3 bg-slate-700 rounded-md hover:bg-slate-600 transition-colors flex justify-between items-center font-semibold"
+            className="w-full text-left p-3 bg-[#EAE2CF] rounded-md hover:bg-[#DCD0B9] transition-colors flex justify-between items-center font-semibold text-[#344F1F]"
           >
             <span>{t('reviewAnswers')}</span>
-            <span className="text-cyan-400">{showReview ? t('hide') : t('show')}</span>
+            <span className="text-[#344F1F]">{showReview ? t('hide') : t('show')}</span>
           </button>
           {showReview && (
             <div className="mt-4 animate-fade-in-up">
@@ -269,7 +270,7 @@ export default function ResultCard({ score, totalQuestions, onRestart, difficult
 
         <button
             onClick={onRestart}
-            className="w-full bg-cyan-500 text-white font-bold py-3 px-6 rounded-lg text-xl hover:bg-cyan-600 transition-all duration-300 transform hover:scale-105 shadow-lg focus:outline-none focus:ring-4 focus:ring-cyan-300"
+            className="w-full bg-[#344F1F] text-[#F9F5F0] font-bold py-3 px-6 rounded-lg text-xl hover:bg-[#2A3F19] transition-all duration-300 transform hover:scale-105 shadow-lg focus:outline-none focus:ring-4 focus:ring-[#F4991A]/50"
         >
             {t('resultRestartButton')}
         </button>

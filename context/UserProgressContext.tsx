@@ -37,7 +37,14 @@ function progressReducer(state: UserProgressState, action: Action): UserProgress
       const today = new Date().toDateString();
       const yesterday = new Date(Date.now() - 86400000).toDateString();
       
-      const newStreak = state.lastPlayedDate === yesterday ? state.streak + 1 : 1;
+      let newStreak = state.streak;
+      if (state.lastPlayedDate !== today) {
+        if (state.lastPlayedDate === yesterday) {
+          newStreak = state.streak + 1;
+        } else {
+          newStreak = 1;
+        }
+      }
 
       const newScores = { ...state.scores };
       if (!newScores[topic]) {

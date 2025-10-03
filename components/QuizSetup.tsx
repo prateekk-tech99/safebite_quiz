@@ -18,19 +18,19 @@ export default function QuizSetup({ onStartQuiz, quizLength, onBack }: QuizSetup
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty>(Difficulty.EASY);
 
   return (
-    <div className="p-8 bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 animate-fade-in text-white">
+    <div className="p-8 bg-[#F2EAD3] rounded-2xl shadow-2xl border border-[#344F1F]/20 animate-fade-in text-[#344F1F]">
       <h1 className="text-3xl font-bold text-center mb-2">{t('quizSetupTitle')}</h1>
-      <p className="text-lg text-slate-300 text-center mb-6">{t('quizSetupSubtitle')}</p>
+      <p className="text-lg text-[#344F1F]/80 text-center mb-6">{t('quizSetupSubtitle')}</p>
 
       {/* Language Selector */}
       <div className="mb-6">
-        <div className="inline-flex w-full justify-center rounded-lg shadow-sm bg-slate-900/50 p-1">
+        <div className="inline-flex w-full justify-center rounded-lg shadow-sm bg-[#EAE2CF] p-1">
           {Object.values(Language).map((lang) => (
             <button
               key={lang}
               onClick={() => setLanguage(lang)}
               className={`w-full px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-md focus:outline-none ${
-                language === lang ? 'bg-cyan-500 text-white shadow' : 'text-slate-300 hover:bg-slate-700'
+                language === lang ? 'bg-[#F4991A] text-[#F9F5F0] shadow' : 'text-[#344F1F]/70 hover:bg-[#DCD0B9]'
               }`}
             >
               {lang}
@@ -54,14 +54,14 @@ export default function QuizSetup({ onStartQuiz, quizLength, onBack }: QuizSetup
                 key={topic}
                 onClick={() => setSelectedTopic(topic)}
                 className={`p-3 rounded-lg transition-colors duration-200 text-center ${
-                  selectedTopic === topic ? 'bg-cyan-500 font-bold' : 'bg-slate-700 hover:bg-slate-600'
+                  selectedTopic === topic ? 'bg-[#F4991A] text-[#F9F5F0] font-bold' : 'bg-[#EAE2CF] hover:bg-[#DCD0B9]'
                 }`}
               >
                 <span className="text-sm">{topic}</span>
                 {topicStats && topicStats.totalAttempted > 0 && (
-                  <div className="w-full bg-slate-900/50 rounded-full h-1.5 mt-2">
+                  <div className="w-full bg-[#344F1F]/10 rounded-full h-1.5 mt-2">
                     <div 
-                      className="bg-cyan-400 h-1.5 rounded-full" 
+                      className="bg-[#F4991A] h-1.5 rounded-full" 
                       style={{ width: `${percentage}%` }}
                     ></div>
                   </div>
@@ -75,13 +75,13 @@ export default function QuizSetup({ onStartQuiz, quizLength, onBack }: QuizSetup
       {/* Difficulty Selection */}
       <div className="mb-8">
         <h2 className="text-xl font-semibold mb-3">{t('selectDifficulty')}</h2>
-        <div className="flex rounded-lg shadow-sm bg-slate-700 p-1">
+        <div className="flex rounded-lg shadow-sm bg-[#EAE2CF] p-1">
           {Object.values(Difficulty).map(diff => (
             <button
               key={diff}
               onClick={() => setSelectedDifficulty(diff)}
               className={`w-full py-3 text-center rounded-md transition-colors duration-200 font-semibold ${
-                selectedDifficulty === diff ? 'bg-cyan-500 text-white shadow' : 'text-slate-300 hover:bg-cyan-600/50'
+                selectedDifficulty === diff ? 'bg-[#F4991A] text-[#F9F5F0] shadow' : 'text-[#344F1F]/80 hover:bg-[#F4991A]/50'
               }`}
             >
               {t(diff === Difficulty.EASY ? 'levelBeginner' : diff === Difficulty.MEDIUM ? 'levelIntermediate' : 'levelExpert')}
@@ -94,25 +94,25 @@ export default function QuizSetup({ onStartQuiz, quizLength, onBack }: QuizSetup
       <div className="space-y-3">
         <button
           onClick={() => onStartQuiz(selectedDifficulty, selectedTopic, false)}
-          className="w-full bg-cyan-500 text-white font-bold py-3 rounded-lg text-lg hover:bg-cyan-600 transition-transform transform hover:scale-105"
+          className="w-full bg-[#F4991A] text-[#F9F5F0] font-bold py-3 rounded-lg text-lg hover:bg-[#E08D18] transition-transform transform hover:scale-105"
         >
           {t('startQuiz')}
         </button>
         <button
           onClick={() => onStartQuiz(selectedDifficulty, selectedTopic, true)}
-          className="w-full bg-slate-600 text-white font-bold py-3 rounded-lg text-lg hover:bg-slate-500 transition-transform transform hover:scale-105"
+          className="w-full bg-[#344F1F] text-[#F9F5F0] font-bold py-3 rounded-lg text-lg hover:bg-[#2A3F19] transition-transform transform hover:scale-105"
         >
           {t('downloadOffline')}
         </button>
         <button
           onClick={onBack}
-          className="w-full text-slate-300 font-bold py-2 rounded-lg text-md hover:bg-slate-700 transition-colors"
+          className="w-full text-[#344F1F]/70 font-bold py-2 rounded-lg text-md hover:bg-[#DCD0B9] transition-colors"
         >
           {t('backButton')}
         </button>
       </div>
 
-      <p className="text-xs text-slate-400 text-center mt-6">{t('quizLengthInfo', quizLength)}</p>
+      <p className="text-xs text-[#344F1F]/60 text-center mt-6">{t('quizLengthInfo', quizLength)}</p>
     </div>
   );
 }

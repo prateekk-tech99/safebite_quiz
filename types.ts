@@ -24,9 +24,8 @@ export enum Difficulty {
 
 export enum Language {
   EN = 'English',
-  ES = 'Español',
-  FR = 'Français',
   HI = 'हिन्दी',
+  MR = 'मराठी',
 }
 
 export enum Topic {

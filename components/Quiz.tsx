@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import type { Question } from '../types';
 import QuestionCard from './QuestionCard';
@@ -69,16 +70,16 @@ export default function Quiz({ questions, onFinish }: QuizProps) {
   return (
     <div className="w-full">
         <div className="mb-4">
-            <div className="flex justify-between items-center text-white mb-2">
+            <div className="flex justify-between items-center text-[#344F1F] mb-2">
                 <p className="font-semibold">{t('questionOf', currentQuestionIndex + 1, questions.length)}</p>
                 <div className="flex items-center gap-4">
                     <p className="font-semibold">{t('score')}: {score}</p>
                     <p className="font-semibold tabular-nums">{t('timeLeft')}: {minutes}:{seconds.toString().padStart(2, '0')}</p>
                 </div>
             </div>
-            <div className="w-full bg-slate-700 rounded-full h-2.5">
+            <div className="w-full bg-[#EAE2CF] rounded-full h-2.5">
                 <div 
-                    className="bg-cyan-400 h-2.5 rounded-full transition-all duration-500" 
+                    className="bg-[#F4991A] h-2.5 rounded-full transition-all duration-500" 
                     style={{ width: `${progressPercentage}%` }}>
                 </div>
             </div>
